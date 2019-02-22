@@ -3,10 +3,70 @@
 
 #include "pch.h"
 #include <iostream>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+void shoot(char coordinatex, char coordinatey, char board[15][15]);
+bool check_hit(int x, int y, char board[15][15]);
+void set_board(char board[15][15]);
+void DisplayBoard(char board[15][15]);
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	char bottom_board[15][15] = {};
+	char top_board[15][15] = {};
+	char ai_board[15][15] = {};
+
+	set_board(top_board);
+	set_board(bottom_board);
+	set_board(ai_board);
+
+	DisplayBoard(bottom_board);
+
+	return 0;
+}
+
+void set_board(char board[15][15])
+{
+	for (int x = 0; x < 15; x++) {
+		for (int y = 0; y < 15; y++)
+		{
+			board[x][y] = 'O';
+		}
+	}
+}
+
+void shoot(char coordinatex, char coordinatey, char board[15][15])
+{
+	std::cout << "Where would you like to aim?\n";
+	std::cin >> coordinatex;
+	std::cin >> coordinatey;
+	bool hit = check_hit(coordinatex, coordinatey, board);
+	if (hit)
+		board[coordinatex][coordinatey] = 'H';
+	else
+		board[coordinatex][coordinatey] = 'X';
+}
+
+bool check_hit(int x, int y, char board[15][15])
+{
+	if (board[x][y] = '#')
+		return true;
+	return false;
+}
+
+void DisplayBoard(char board[15][15])
+{
+	for (int x = 0; x < 15; x++)
+	{
+		for (int y = 0; y < 15; y++)
+		{
+			std::cout << board[x][y] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
