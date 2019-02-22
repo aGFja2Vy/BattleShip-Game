@@ -1,17 +1,33 @@
 // BattleShipGame.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+//#include <cstdlib> to create random inputs by the "ai".
+//#include <ctime> to create truly random numbers with the <cstdlib> random functions.
+//shoot() function recieves input from the player and inputs into the check_hit() function, and outputs whether or not the shot hit or missed.
+//check_hit() function checks the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
+//set_board() to initially set all values of the board to O.
+//Displayboard() to show all of the player's board values to them.
+//main() to start the thing.
 
+//#include <cstdlib> to create random inputs by the "ai".
+//#include <ctime> to create truly random numbers with the <cstdlib> random functions.
 #include "pch.h"
-#include <iostream>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 
+//shoot() function recieves input from the player and inputs into the check_hit() function, and outputs whether or not the shot hit or missed.
 void shoot(char coordinatex, char coordinatey, char board[15][15]);
+
+//check_hit() function checks the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
 bool check_hit(int x, int y, char board[15][15]);
+
+//set_board() to initially set all values of the board to O.
 void set_board(char board[15][15]);
+
+//Displayboard() to show all of the player's board values to them.
 void DisplayBoard(char board[15][15]);
 
+
+//main() to start the thing.
 int main()
 {
 	char bottom_board[15][15] = {};
