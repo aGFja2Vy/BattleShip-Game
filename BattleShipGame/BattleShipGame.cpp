@@ -14,19 +14,19 @@
 #include <cstdlib>
 #include <ctime>
 
-//shoot() function recieves input from the player and inputs into the check_hit() function, and outputs whether or not the shot hit or missed.
-void shoot(char coordinatex, char coordinatey, char board[15][15]);
-
-//check_hit() function checks the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
-bool check_hit(int x, int y, char board[15][15]);
+//DisplayBoard() to show all of the player's board values to them.
+void DisplayBoard(char board[15][15]);
 
 //set_board() to initially set all values of the board to O.
 void set_board(char board[15][15]);
 
-//Displayboard() to show all of the player's board values to them.
-void DisplayBoard(char board[15][15]);
+//shoot() to recieve input from the player and input into the check_hit() function, and outputs whether or not the shot hit or missed.
+void shoot(char coordinatex, char coordinatey, char board[15][15]);
 
-//life_test to check if any of a player's ships are alive. Usage will be in a while loop that will finish the game if one's ships have died. Undecided function name.
+//check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
+bool check_hit(int x, int y, char board[15][15]);
+
+//life_test to check if any of a player's ships are alive. Usage will be in a while loop that will finish the game if all of one's ships have died. Undecided function name.
 bool life_test(char board[15][15]);
 
 //main() to start the thing.
@@ -39,6 +39,7 @@ int main()
 	set_board(top_board);
 	set_board(bottom_board);
 	set_board(ai_board);
+
 	DisplayBoard(bottom_board);
 
 	return 0;
@@ -66,6 +67,7 @@ void set_board(char board[15][15])
 		}
 	}
 }
+
 //For now, undecided variables for shoot() function. Suggesting variable usage of x1 and y1.
 void shoot(char coordinatex, char coordinatey, char board[15][15])
 {
