@@ -26,6 +26,8 @@ void set_board(char board[15][15]);
 //Displayboard() to show all of the player's board values to them.
 void DisplayBoard(char board[15][15]);
 
+//life_test to check if any of a player's ships are alive. Usage will be in a while loop that will finish the game if one's ships have died. Undecided function name.
+bool life_test(char board[15][15]);
 
 //main() to start the thing.
 int main()
@@ -37,10 +39,22 @@ int main()
 	set_board(top_board);
 	set_board(bottom_board);
 	set_board(ai_board);
-
 	DisplayBoard(bottom_board);
 
 	return 0;
+}
+
+void DisplayBoard(char board[15][15])
+{
+	for (int x = 0; x < 15; x++)
+	{
+		for (int y = 0; y < 15; y++)
+		{
+			std::cout << board[x][y] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
 }
 
 void set_board(char board[15][15])
@@ -52,7 +66,7 @@ void set_board(char board[15][15])
 		}
 	}
 }
-
+//For now, undecided variables for shoot() function. Suggesting variable usage of x1 and y1.
 void shoot(char coordinatex, char coordinatey, char board[15][15])
 {
 	std::cout << "Where would you like to aim?\n";
@@ -72,17 +86,19 @@ bool check_hit(int x, int y, char board[15][15])
 	return false;
 }
 
-void DisplayBoard(char board[15][15])
+//Reiteration: function name "life_test" undecided. Also requesting possible shortening of code.
+bool life_test(char board[15][15])
 {
-	for (int x = 0; x < 15; x++)
-	{
-		for (int y = 0; y < 15; y++)
-		{
-			std::cout << board[x][y] << "\t";
+	int lifetest = 0;
+	for (int x = 0; x < 15; x++) {
+		for (int y = 0; y < 15; y++) {
+			if(board[x][y] = '#')
+			lifetest++;
 		}
-		std::cout << std::endl;
 	}
-
+	if (lifetest >= 1)
+		return true;
+	return false;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
