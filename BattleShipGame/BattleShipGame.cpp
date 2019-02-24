@@ -45,6 +45,7 @@ bool vspace_test(char board[15][15], int x2, int y2);
 //main() to start the thing.
 int main()
 {
+	int ships[5] = { 5, 4, 4, 3, 2 };
 	char bottom_board[15][15] = {};
 	char top_board[15][15] = {};
 	char ai_board[15][15] = {};
@@ -60,11 +61,14 @@ int main()
 
 void DisplayBoard(char board[15][15])
 {
+	std::cout << "   |1   2   3   4   5   6   7   8   9   10  11  12  13  14  15" << std::endl;
+	std::cout << "---|----------------------------------------------------------" << std::endl;
 	for (int x = 0; x < 15; x++)
 	{
+		std::cout << "   |";
 		for (int y = 0; y < 15; y++)
 		{
-			std::cout << board[x][y] << "\t";
+			std::cout << board[x][y] << "   ";
 		}
 		std::cout << std::endl;
 	}
