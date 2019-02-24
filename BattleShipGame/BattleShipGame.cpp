@@ -72,18 +72,6 @@ int main()
 	DisplayBoard(bottom_board);
 	ai_set_ship(ai_board);
 
-	bool lifetest = life_test(bottom_board);
-	bool ailifetest = life_test(ai_board);
-	while (lifetest && ailifetest) {
-		shoot(ai_board[15][15], 0, 0);
-		updateboard(ai_board, top_board);
-		DisplayBoard(top_board);
-		ai_shoot(bottom_board);
-		DisplayBoard(bottom_board);
-		lifetest = life_test(bottom_board);
-		ailifetest = life_test(ai_board);
-	}
-	
 	return 0;
 }
 
@@ -159,21 +147,20 @@ void updateboard(char board[15][15], char board2[15][15])
 	}
 }
 
-//Unfortunately, string variables don't seem to work with std::cin. For now, setting a number for horizontal or vertical position.
+//Figure out a way to set position to a bool value instead of a number?
 void set_ship(char board[15][15], int x2, int y2)
 {
 	bool ship_settle = false;
 	do {
-		bool hspacetest = false;
-		bool vspacetest = false;
+		bool spacetest = false;
 		int position = 0;
 		std::cout << "Where would you like to place your ship?" << std::endl;
 		std::cin >> x2 >> y2;
 		std::cout << "1: Horizontal \n2: Vertical" << std::endl;
 		std::cin >> position;
 		if (position == 1) {
-			hspacetest = hspace_test(board, x2, y2);
-			if (hspacetest) {
+			spacetest = hspace_test(board, x2, y2);
+			if (spacetest) {
 				for (int y = 0; y < 5; y++) {
 					board[x2 - 1][y2 - 3 + y] = '#';
 				}
@@ -181,15 +168,15 @@ void set_ship(char board[15][15], int x2, int y2)
 			}
 		}
 		else {
-			vspacetest = vspace_test(board, x2, y2);
-			if (vspacetest) {
+			spacetest = vspace_test(board, x2, y2);
+			if (spacetest) {
 				for (int x = 0; x < 5; x++) {
 					board[x2 - 3 + x][y2 - 1] = '#';
 				}
 				ship_settle = false;
 			}
 		}
-		if (!(hspacetest) && !(vspacetest)) {
+		if (!(spacetest)) {
 			std::cout << "Invalid position." << std::endl;
 			ship_settle = true;
 		}

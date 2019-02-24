@@ -1,3 +1,2 @@
 ﻿  BattleShipGame.cpp
-BattleShipGame.obj : error LNK2019: unresolved external symbol "void __cdecl shoot(char,char,char (* const)[15])" (?shoot@@YAXDDQAY0P@D@Z) referenced in function _main
-C:\Users\mrmat\Documents\GitHub\BattleShip-Game\BattleShipGame\Debug\BattleShipGame.exe : fatal error LNK1120: 1 unresolved externals
+  BattleShipGame.vcxproj -> C:\Users\mrmat\Documents\GitHub\BattleShip-Game\BattleShipGame\Debug\BattleShipGame.exe
