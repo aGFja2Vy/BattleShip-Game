@@ -57,6 +57,7 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2);
 //main() to start the thing.
 int main()
 {
+	int turn_counter = 1;
 	int ships[5] = { 5, 4, 4, 3, 2 };
 	char bottom_board[16][16] = {};
 	char top_board[16][16] = {};
@@ -82,15 +83,18 @@ int main()
 		DisplayBoard(bottom_board);
 		lifetest = life_test(bottom_board);
 		ailifetest = life_test(ai_board);
+		turn_counter++;
 	}
 	if (!(ailifetest)) {
 		std::cout << "You win!" << std::endl;
 		DisplayBoard(ai_board);
+		std::cout << "Turns taken: " << turn_counter << std::endl;
 		return 0;
-	}
+		}
 	else {
 		std::cout << "You lost!" << std::endl;
 		DisplayBoard(ai_board);
+		std::cout << "Turns taken: " << turn_counter << std::endl;
 		return 0;
 	}
 }
