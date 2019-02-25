@@ -57,6 +57,8 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2);
 //main() to start the thing.
 int main()
 {
+	srand(time(0));
+
 	int turn_counter = 1;
 	int ships[5] = { 5, 4, 4, 3, 2 };
 	char bottom_board[16][16] = {};
@@ -79,33 +81,42 @@ int main()
 		shoot(ai_board, 0, 0);
 		updateboard(ai_board, top_board);
 		DisplayBoard(top_board);
+		ailifetest = life_test(ai_board);
+		if (!(ailifetest)) {
+			std::cout << "You win!" << std::endl;
+			DisplayBoard(ai_board);
+			std::cout << "Turns taken: " << turn_counter << std::endl;
+			return 0;
+		}
 		ai_shoot(bottom_board);
 		DisplayBoard(bottom_board);
 		lifetest = life_test(bottom_board);
-		ailifetest = life_test(ai_board);
-		turn_counter++;
-	}
-	if (!(ailifetest)) {
-		std::cout << "You win!" << std::endl;
-		DisplayBoard(ai_board);
-		std::cout << "Turns taken: " << turn_counter << std::endl;
-		return 0;
+		if (!(lifetest)) {
+			std::cout << "You lost!" << std::endl;
+			DisplayBoard(ai_board);
+			std::cout << "Turns taken: " << turn_counter << std::endl;
+			return 0;
 		}
-	else {
-		std::cout << "You lost!" << std::endl;
-		DisplayBoard(ai_board);
-		std::cout << "Turns taken: " << turn_counter << std::endl;
-		return 0;
+		turn_counter++;
 	}
 }
 
 void DisplayBoard(char board[16][16])
 {
-	std::cout << "\t|1  2  3  4  5  6  7  8  9  10 11 12 13 14 15" << std::endl;
-	std::cout << "--------|--------------------------------------------" << std::endl;
-	for (int x = 0; x < 15; x++)
+	std::cout << "   |1  2  3  4  5  6  7  8  9  10 11 12 13 14 15" << std::endl;
+	std::cout << "---|--------------------------------------------" << std::endl;
+	for (int x = 0; x < 9; x++)
 	{
-		std::cout << x + 1 << "\t|";
+		std::cout << x + 1 << "  |";
+		for (int y = 0; y < 15; y++)
+		{
+			std::cout << board[x][y] << "  ";
+		}
+		std::cout << std::endl;
+	}
+	for(int x = 9; x < 15; x++) 
+	{
+		std::cout << x + 1 << " |";
 		for (int y = 0; y < 15; y++)
 		{
 			std::cout << board[x][y] << "  ";
@@ -268,7 +279,7 @@ bool hspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int hspacetest = 0;
 	for (int y = 0; y < ships; y++) {
-		if (board[x2 - 1][y2 - 3 + y] == 'O') {
+		if (board[x2 - 1][y2 - (ships / 2) + y] == 'O') {
 			hspacetest++;
 		}
 	}
@@ -280,7 +291,7 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int vspacetest = 0;
 	for (int x = 0; x < ships; x++) {
-		if (board[x2 - 3 + x][y2 - 1] == 'O') {
+		if (board[x2 - (ships / 2) + x][y2 - 1] == 'O') {
 			vspacetest++;
 		}
 	}
