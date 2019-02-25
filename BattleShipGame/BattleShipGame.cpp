@@ -28,13 +28,13 @@ void DisplayBoard(char board[16][16]);
 void set_board(char board[16][16]);
 
 //ai_set_ship() to set the enemy's board via random input.
-void ai_set_ship(char board[16][16]);
+void ai_set_ship(char board[16][16], int ships);
 
 //updateboard() to update the top board to the show the same as the ai board, but without the ships.
 void updateboard(char board[16][16], char board2[16][16]);
 
 //set_ship() to set up the player's ships with their inputs. Also resets int values so it may be used again.
-void set_ship(char board[16][16], int x2 = 0, int y2 = 0);
+void set_ship(char board[16][16], int ships, int x2 = 0, int y2 = 0);
 
 //shoot() to recieve input from the player and input into the check_hit() function, and outputs whether or not the shot hit or missed.
 void shoot(char board[16][16], int x1, int y1);
@@ -49,10 +49,10 @@ bool check_hit(int x, int y, char board[16][16]);
 bool life_test(char board[16][16]);
 
 //hspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for horizontal orientation.
-bool hspace_test(char board[16][16], int x2, int y2);
+bool hspace_test(char board[16][16], int ships, int x2, int y2);
 
 //vspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for vertical orientation.
-bool vspace_test(char board[16][16], int x2, int y2);
+bool vspace_test(char board[16][16], int ships, int x2, int y2);
 
 //main() to start the thing.
 int main()
@@ -67,11 +67,11 @@ int main()
 	set_board(ai_board);
 	
 	DisplayBoard(bottom_board);
-
-	set_ship(bottom_board);
-	DisplayBoard(bottom_board);
-	ai_set_ship(ai_board);
-
+	for (int w = 0; w < 5; w++) {
+		set_ship(bottom_board, ships[w]);
+		DisplayBoard(bottom_board);
+		ai_set_ship(ai_board, ships[w]);
+	}
 	bool lifetest = life_test(bottom_board);
 	bool ailifetest = life_test(ai_board);
 	while (lifetest && ailifetest) {
@@ -120,7 +120,7 @@ void set_board(char board[16][16])
 	}
 }
 
-void ai_set_ship(char board[16][16])
+void ai_set_ship(char board[16][16], int ships)
 {
 	bool ship_settle = false;
 	do {
@@ -129,18 +129,18 @@ void ai_set_ship(char board[16][16])
 		int y2 = std::rand() % 15;
 		int position = std::rand() % 2;
 		if (position == 0) {
-			spacetest = hspace_test(board, x2, y2);
+			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int y = 0; y < 5; y++) {
+				for (int y = 0; y < ships; y++) {
 					board[x2][y2 - 2 + y] = '#';
 				}
 				ship_settle = false;
 			}
 		}
 		else {
-			spacetest = vspace_test(board, x2, y2);
+			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int x = 0; x < 5; x++) {
+				for (int x = 0; x < ships; x++) {
 					board[x2 - 2 + x][y2] = '#';
 				}
 				ship_settle = false;
@@ -168,7 +168,7 @@ void updateboard(char board[16][16], char board2[16][16])
 }
 
 //Figure out a way to set position to a bool value instead of a number?
-void set_ship(char board[16][16], int x2, int y2)
+void set_ship(char board[16][16], int ships, int x2, int y2)
 {
 	bool ship_settle = false;
 	do {
@@ -179,18 +179,18 @@ void set_ship(char board[16][16], int x2, int y2)
 		std::cout << "1: Horizontal \n2: Vertical" << std::endl;
 		std::cin >> position;
 		if (position == 1) {
-			spacetest = hspace_test(board, x2, y2);
+			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int y = 0; y < 5; y++) {
+				for (int y = 0; y < ships; y++) {
 					board[x2 - 1][y2 - 3 + y] = '#';
 				}
 				ship_settle = false;
 			}
 		}
 		else {
-			spacetest = vspace_test(board, x2, y2);
+			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int x = 0; x < 5; x++) {
+				for (int x = 0; x < ships; x++) {
 					board[x2 - 3 + x][y2 - 1] = '#';
 				}
 				ship_settle = false;
@@ -224,16 +224,16 @@ void shoot(char board[16][16], int x1, int y1)
 //Undecided variable names.
 void ai_shoot(char board[16][16])
 {
-	int x_for_ai = std::rand() % 15;
-	int y_for_ai = std::rand() % 15;
+	int xai = std::rand() % 15;
+	int yai = std::rand() % 15;
 
-	bool hit = check_hit(x_for_ai, y_for_ai, board);
+	bool hit = check_hit(xai, yai, board);
 	if (hit) {
-		board[x_for_ai][y_for_ai] = 'H';
+		board[xai][yai] = 'H';
 		std::cout << "You've been hit!" << std::endl;
 	}
 	else {
-		board[x_for_ai][y_for_ai] = 'X';
+		board[xai][yai] = 'X';
 		std::cout << "Enemy missed!" << std::endl;
 	}
 }
@@ -260,28 +260,27 @@ bool life_test(char board[16][16])
 	return false;
 }
 
-//So far, the space tests will only be able to detect space for a 5-space ship. We will need to change this in the future to work with smaller ships.
-bool hspace_test(char board[16][16], int x2, int y2)
+bool hspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int hspacetest = 0;
-	for (int y = 0; y < 5; y++) {
+	for (int y = 0; y < ships; y++) {
 		if (board[x2 - 1][y2 - 3 + y] == 'O') {
 			hspacetest++;
 		}
 	}
-	if (hspacetest == 5)
+	if (hspacetest == ships)
 		return true;
 	return false;
 }
-bool vspace_test(char board[16][16], int x2, int y2)
+bool vspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int vspacetest = 0;
-	for (int x = 0; x < 5; x++) {
+	for (int x = 0; x < ships; x++) {
 		if (board[x2 - 3 + x][y2 - 1] == 'O') {
 			vspacetest++;
 		}
 	}
-	if (vspacetest == 5)
+	if (vspacetest == ships)
 		return true;
 	return false;
 }
