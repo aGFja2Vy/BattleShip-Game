@@ -57,7 +57,7 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2);
 //main() to start the thing.
 int main()
 {
-	srand(time(0));
+	srand((unsigned int)time(0));
 	int xai = 0;
 	int yai = 0;
 	int orientation = 0;
@@ -79,6 +79,8 @@ int main()
 	}
 	bool lifetest = life_test(bottom_board);
 	bool ailifetest = life_test(ai_board);
+
+	//Reminder to change the while loop to something more efficient.
 	while (lifetest && ailifetest) {
 		shoot(ai_board, 0, 0);
 		updateboard(ai_board, top_board);
@@ -132,7 +134,7 @@ void set_board(char board[16][16])
 	for (int x = 0; x < 15; x++) {
 		for (int y = 0; y < 15; y++)
 		{
-			board[x][y] = 'O';
+			board[x][y] = ' ';
 		}
 	}
 }
@@ -178,7 +180,7 @@ void updateboard(char board[16][16], char board2[16][16])
 			} else if (board[x][y] == 'X') {
 				board2[x][y] = 'X';
 			} else {
-				board2[x][y] = 'O';
+				board2[x][y] = ' ';
 			}
 		}
 	}
@@ -332,7 +334,7 @@ bool hspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int hspacetest = 0;
 	for (int y = 0; y < ships; y++) {
-		if (board[x2 - 1][y2 - (ships / 2) + y] == 'O') {
+		if (board[x2 - 1][y2 - (ships / 2) + y] == ' ') {
 			hspacetest++;
 		}
 	}
@@ -344,7 +346,7 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2)
 {
 	int vspacetest = 0;
 	for (int x = 0; x < ships; x++) {
-		if (board[x2 - (ships / 2) + x][y2 - 1] == 'O') {
+		if (board[x2 - (ships / 2) + x][y2 - 1] == ' ') {
 			vspacetest++;
 		}
 	}
