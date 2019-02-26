@@ -40,7 +40,7 @@ void set_ship(char board[16][16], int ships, int x2 = 0, int y2 = 0);
 void shoot(char board[16][16], int x1, int y1);
 
 //ai_shoot() to generate random numbers and input it into a check_hit() function, and outputs whether or not the shot hit or missed.
-void ai_shoot(char board[16][16]);
+void ai_shoot(char board[16][16], int orientation, int xai, int yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
 bool check_hit(int x, int y, char board[16][16]);
@@ -58,7 +58,9 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2);
 int main()
 {
 	srand(time(0));
-
+	int xai = 0;
+	int yai = 0;
+	int orientation = 0;
 	int turn_counter = 1;
 	int ships[5] = { 5, 4, 4, 3, 2 };
 	char bottom_board[16][16] = {};
@@ -88,7 +90,7 @@ int main()
 			std::cout << "Turns taken: " << turn_counter << std::endl;
 			return 0;
 		}
-		ai_shoot(bottom_board);
+		ai_shoot(bottom_board, orientation, xai, yai);
 		DisplayBoard(bottom_board);
 		lifetest = life_test(bottom_board);
 		if (!(lifetest)) {
@@ -147,7 +149,7 @@ void ai_set_ship(char board[16][16], int ships)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++) {
-					board[x2][y2 - 2 + y] = '#';
+					board[x2][y2 - (ships / 2) + y] = '#';
 				}
 				ship_settle = false;
 			}
@@ -156,7 +158,7 @@ void ai_set_ship(char board[16][16], int ships)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++) {
-					board[x2 - 2 + x][y2] = '#';
+					board[x2 - (ships / 2) + x][y2] = '#';
 				}
 				ship_settle = false;
 			}
@@ -197,7 +199,7 @@ void set_ship(char board[16][16], int ships, int x2, int y2)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++) {
-					board[x2 - 1][y2 - 3 + y] = '#';
+					board[x2 - 1][y2 - (ships / 2) + y] = '#';
 				}
 				ship_settle = false;
 			}
@@ -206,7 +208,7 @@ void set_ship(char board[16][16], int ships, int x2, int y2)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++) {
-					board[x2 - 3 + x][y2 - 1] = '#';
+					board[x2 - (ships / 2) + x][y2 - 1] = '#';
 				}
 				ship_settle = false;
 			}
@@ -237,19 +239,70 @@ void shoot(char board[16][16], int x1, int y1)
 }
 
 //Undecided variable names.
-void ai_shoot(char board[16][16])
+void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 {
-	int xai = std::rand() % 15;
-	int yai = std::rand() % 15;
+	if (orientation == 0) {
+		int xai = std::rand() % 15;
+		int yai = std::rand() % 15;
 
-	bool hit = check_hit(xai, yai, board);
-	if (hit) {
-		board[xai][yai] = 'H';
-		std::cout << "You've been hit!" << std::endl;
+		bool hit = check_hit(xai, yai, board);
+		if (hit) {
+			board[xai][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			orientation = 4;
+		}
+		else {
+			board[xai][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+		}
 	}
-	else {
-		board[xai][yai] = 'X';
-		std::cout << "Enemy missed!" << std::endl;
+	else if (orientation == 1) {
+		bool hit = check_hit(xai + 1, yai, board);
+		if (hit) {
+			board[xai + 1][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+		}
+		else {
+			board[xai + 1][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
+	}
+	else if (orientation == 2) {
+		bool hit = check_hit(xai, yai + 1, board);
+		if (hit) {
+			board[xai][yai + 1] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+		}
+		else {
+			board[xai][yai + 1] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
+	}
+	else if (orientation == 3) {
+		bool hit = check_hit(xai - 1, yai, board);
+		if (hit) {
+			board[xai - 1][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+		}
+		else {
+			board[xai - 1][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
+	}
+	else if (orientation == 4) {
+		bool hit = check_hit(xai, yai - 1, board);
+		if (hit) {
+			board[xai][yai - 1] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+		}
+		else {
+			board[xai][yai - 1] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
 	}
 }
 
