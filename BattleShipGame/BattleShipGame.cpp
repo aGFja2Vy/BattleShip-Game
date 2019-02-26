@@ -1,24 +1,9 @@
 // BattleShipGame.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//#include <cstdlib> to create random inputs by the "ai".
-//#include <ctime> to create truly random numbers with the <cstdlib> random functions.
-//DisplayBoard() to show all of the player's board values to them.
-//set_board() to initially set all values of the board to O.
-//ai_set_ship() to set the enemy's board via random input.
-//updateboard() to update the top board to the show the same as the ai board, but without the ships.
-//set_ship() to set up the player's ships with their inputs. Also resets int values so it may be used again.
-//shoot() to recieve input from the player and input into the check_hit() function, and outputs whether or not the shot hit or missed.
-//ai_shoot() to generate random numbers and input it into a check_hit() function, and outputs whether or not the shot hit or missed.
-//check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
-//life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
-//hspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for horizontal orientation.
-//vspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for vertical orientation.
-//main() to start the thing.
 
-//#include <cstdlib> to create random inputs by the "ai".
-//#include <ctime> to create truly random numbers with the <cstdlib> random functions.
-#include "pch.h"
 #include <iostream>
+//Library includes random to create random inputs by the "ai".
 #include <cstdlib>
+//Libary included to create truly random numbers with the libary above random functions.
 #include <ctime>
 
 //DisplayBoard() to show all of the player's board values to them.
@@ -40,10 +25,12 @@ void set_ship(char board[16][16], int ships, int x2 = 0, int y2 = 0);
 void shoot(char board[16][16], int x1, int y1);
 
 //ai_shoot() to generate random numbers and input it into a check_hit() function, and outputs whether or not the shot hit or missed.
-void ai_shoot(char board[16][16], int orientation, int xai, int yai);
+void ai_shoot(char board[16][16], int &orientation, int xai, int yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool on_board);
+bool check_hit(int x, int y, char board[16][16], bool duplicateShot);
+
+bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool &on_board);
 
 //life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
 bool life_test(char board[16][16]);
@@ -70,7 +57,7 @@ int main()
 	set_board(top_board);
 	set_board(bottom_board);
 	set_board(ai_board);
-	
+
 	DisplayBoard(bottom_board);
 	for (int w = 0; w < 5; w++) {
 		set_ship(bottom_board, ships[w]);
@@ -80,7 +67,8 @@ int main()
 	bool lifetest = life_test(bottom_board);
 	bool ailifetest = life_test(ai_board);
 
-	//Reminder to change the while loop to something more efficient.
+	//Reminder to change the while loop to something more efficient
+	//This maybe a good while loop :)
 	while (lifetest && ailifetest) {
 		shoot(ai_board, 0, 0);
 		updateboard(ai_board, top_board);
@@ -118,7 +106,7 @@ void DisplayBoard(char board[16][16])
 		}
 		std::cout << std::endl;
 	}
-	for(int x = 9; x < 15; x++) 
+	for (int x = 9; x < 15; x++)
 	{
 		std::cout << x + 1 << "|";
 		for (int y = 0; y < 15; y++)
@@ -177,9 +165,11 @@ void updateboard(char board[16][16], char board2[16][16])
 		for (int y = 0; y < 15; y++) {
 			if (board[x][y] == 'H') {
 				board2[x][y] = 'H';
-			} else if (board[x][y] == 'X') {
+			}
+			else if (board[x][y] == 'X') {
 				board2[x][y] = 'X';
-			} else {
+			}
+			else {
 				board2[x][y] = ' ';
 			}
 		}
@@ -232,10 +222,10 @@ void shoot(char board[16][16], int x1, int y1)
 		std::cin >> x1;
 		std::cin >> y1;
 		hit = check_hit(x1 - 1, y1 - 1, board, duplicateShot, on_board);
-		if(duplicateShot) {
+		if (duplicateShot) {
 			std::cout << "Already shot there. Please try again." << std::endl;
 		}
-		if (on_board) {
+		if (!on_board) {
 			std::cout << "Inputs are not on the board. Please try again." << std::endl;
 		}
 	} while (duplicateShot || on_board);
@@ -248,110 +238,123 @@ void shoot(char board[16][16], int x1, int y1)
 		std::cout << "Miss!" << std::endl;
 	}
 }
-
 //Undecided variable names.
-void ai_shoot(char board[16][16], int orientation, int xai, int yai)
+void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 {
 	bool duplicateShot = false;
-	bool hit = false; 
+	bool hit = false;
 	bool on_board = false;
-	do {
-		switch (orientation) {
-		case 1: {
-			hit = check_hit(xai + 1, yai, board, duplicateShot, on_board);
-			if (duplicateShot || on_board) {
-				orientation--;
-				break;
-			}
-			if (hit) {
-				board[xai + 1][yai] = 'H';
-				std::cout << "You've been hit!" << std::endl;
-				xai++;
-			}
-			else {
-				board[xai + 1][yai] = 'X';
-				std::cout << "Enemy missed!" << std::endl;
-				orientation--;
-			} break;
+	//Really Dude
+	//do {
+	switch (orientation) {
+	case 1: {
+		//The xai + 1 thing wont work because it is not saving the last location it is coming from a new spot
+		hit = check_hit(xai + 1, yai, board, duplicateShot, on_board);
+		if (duplicateShot || on_board) {
+			orientation--;
+			break;
 		}
-		case 2: {
-			hit = check_hit(xai, yai + 1, board, duplicateShot, on_board);
-			if (duplicateShot || on_board) {
-				orientation--;
-				break;
-			}
-			if (hit) {
-				board[xai][yai + 1] = 'H';
-				std::cout << "You've been hit!" << std::endl;
-				yai++;
-			}
-			else {
-				board[xai][yai + 1] = 'X';
-				std::cout << "Enemy missed!" << std::endl;
-				orientation--;
-			} break;
+		if (hit) {
+			board[xai + 1][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			xai++;
 		}
-		case 3: {
-			hit = check_hit(xai - 1, yai, board, duplicateShot, on_board);
-			if (duplicateShot || on_board) {
-				orientation--;
-				break;
-			}
-			if (hit) {
-				board[xai - 1][yai] = 'H';
-				std::cout << "You've been hit!" << std::endl;
-				xai--;
-			}
-			else {
-				board[xai - 1][yai] = 'X';
-				std::cout << "Enemy missed!" << std::endl;
-				orientation--;
-			} break;
+		else {
+			board[xai + 1][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
 		}
-		case 4: {
-				hit = check_hit(xai, yai - 1, board, duplicateShot, on_board);
-			if (duplicateShot || on_board) {
-				orientation--;
-				break;
-			}
-			if (hit) {
-				board[xai][yai - 1] = 'H';
-				std::cout << "You've been hit!" << std::endl;
-				yai--;
-			}
-			else {
-				board[xai][yai - 1] = 'X';
-				std::cout << "Enemy missed!" << std::endl;
-				orientation--;
-			} break;
+		break;
+	}
+	case 2: {
+		hit = check_hit(xai, yai + 1, board, duplicateShot, on_board);
+		if (duplicateShot || on_board) {
+			orientation--;
+			break;
 		}
-		default: {
-			do {
-				int xai = std::rand() % 15;
-				int yai = std::rand() % 15;
-				std::cout << xai + 1 << "\t" << yai + 1 << std::endl;
-
-				hit = check_hit(xai, yai, board, duplicateShot, false);
-			} while (duplicateShot);
-			if (hit) {
-				std::cout << xai + 1 << "\t" << yai + 1 << std::endl;
-				board[xai][yai] = 'H';
-				std::cout << "You've been hit!" << std::endl;
-				orientation = 4;
-			}
-			else {
-				board[xai][yai] = 'X';
-				std::cout << "Enemy missed!" << std::endl;
-			} break;
+		if (hit) {
+			board[xai][yai + 1] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			yai++;
 		}
+		else {
+			board[xai][yai + 1] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
 		}
-	} while (duplicateShot);
+		break;
+	}
+	case 3: {
+		hit = check_hit(xai - 1, yai, board, duplicateShot, on_board);
+		if (duplicateShot || on_board) {
+			orientation--;
+			break;
+		}
+		if (hit) {
+			board[xai - 1][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			xai--;
+		}
+		else {
+			board[xai - 1][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
+		break;
+	}
+	case 4: {
+		hit = check_hit(xai, yai - 1, board, duplicateShot, on_board);
+		if (duplicateShot || on_board) {
+			orientation--;
+			break;
+		}
+		if (hit) {
+			board[xai][yai - 1] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			yai--;
+		}
+		else {
+			board[xai][yai - 1] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+			orientation--;
+		}
+		break;
+	}
+	default: {
+		//do {
+		int xai = std::rand() % 15;
+		int yai = std::rand() % 15;
+		hit = check_hit(xai, yai, board, duplicateShot);
+		//This line is what is breaking it so STOP WITH THE DO WHILE LOOPS
+		//} while (duplicateShot);
+		if (hit) {
+			board[xai][yai] = 'H';
+			std::cout << "You've been hit!" << std::endl;
+			orientation = 4;
+		}
+		else {
+			std::cout << xai + 1 << "\t" << yai + 1 << std::endl;
+			board[xai][yai] = 'X';
+			std::cout << "Enemy missed!" << std::endl;
+		}
+		break;
+	}
+	}
+	//} while (duplicateShot);
 }
 
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool on_board)
+bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool &on_board)
 {
 	if (x > 15 || y > 15)
 		on_board = true;
+	if (board[x][y] == 'H' || 'X')
+		duplicateShot = true;
+	if (board[x][y] == '#')
+		return true;
+	return false;
+}
+bool check_hit(int x, int y, char board[16][16], bool duplicateShot)
+{
 	if (board[x][y] == 'H' || 'X')
 		duplicateShot = true;
 	if (board[x][y] == '#')
@@ -398,15 +401,3 @@ bool vspace_test(char board[16][16], int ships, int x2, int y2)
 		return true;
 	return false;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
-
