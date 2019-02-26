@@ -243,7 +243,8 @@ void shoot(char board[16][16], int x1, int y1)
 //Undecided variable names.
 void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 {
-	if (orientation == 0) {
+	switch (orientation) {
+	case 0: {
 		int xai = std::rand() % 15;
 		int yai = std::rand() % 15;
 
@@ -258,7 +259,7 @@ void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 			std::cout << "Enemy missed!" << std::endl;
 		}
 	}
-	else if (orientation == 1) {
+	case 1: {
 		bool hit = check_hit(xai + 1, yai, board);
 		if (hit) {
 			board[xai + 1][yai] = 'H';
@@ -270,7 +271,7 @@ void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 			orientation--;
 		}
 	}
-	else if (orientation == 2) {
+	case 2: {
 		bool hit = check_hit(xai, yai + 1, board);
 		if (hit) {
 			board[xai][yai + 1] = 'H';
@@ -282,7 +283,7 @@ void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 			orientation--;
 		}
 	}
-	else if (orientation == 3) {
+	case 3: {
 		bool hit = check_hit(xai - 1, yai, board);
 		if (hit) {
 			board[xai - 1][yai] = 'H';
@@ -294,7 +295,7 @@ void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 			orientation--;
 		}
 	}
-	else if (orientation == 4) {
+	case 4: {
 		bool hit = check_hit(xai, yai - 1, board);
 		if (hit) {
 			board[xai][yai - 1] = 'H';
@@ -305,6 +306,7 @@ void ai_shoot(char board[16][16], int orientation, int xai, int yai)
 			std::cout << "Enemy missed!" << std::endl;
 			orientation--;
 		}
+	}
 	}
 }
 
