@@ -1,5 +1,6 @@
 // BattleShipGame.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
+#include "pch.h"
 #include <iostream>
 //Library includes random to create random inputs by the "ai".
 #include <cstdlib>
@@ -28,9 +29,9 @@ void shoot(char board[16][16], int x1, int y1);
 void ai_shoot(char board[16][16], int &orientation, int xai, int yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot);
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot);
 
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool &on_board);
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board);
 
 //life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
 bool life_test(char board[16][16]);
@@ -216,19 +217,21 @@ void shoot(char board[16][16], int x1, int y1)
 {
 	bool hit = false;
 	bool duplicateShot = false;
-	bool on_board = false;
+	bool not_on_board = false;
+
 	do {
 		std::cout << "Where would you like to aim?" << std::endl;
-		std::cin >> x1;
-		std::cin >> y1;
-		hit = check_hit(x1 - 1, y1 - 1, board, duplicateShot, on_board);
-		if (duplicateShot) {
+		std::cin >> x1 >> y1;
+		//std::cin >> y1;
+		hit = check_hit(x1 - 1, y1 - 1, board, duplicateShot, not_on_board);
+
+		if (duplicateShot)
 			std::cout << "Already shot there. Please try again." << std::endl;
-		}
-		if (!on_board) {
+		if (not_on_board)
 			std::cout << "Inputs are not on the board. Please try again." << std::endl;
-		}
-	} while (duplicateShot || on_board);
+
+	} while (duplicateShot || not_on_board);
+
 	if (hit) {
 		board[x1 - 1][y1 - 1] = 'H';
 		std::cout << "Hit!" << std::endl;
@@ -243,14 +246,15 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 {
 	bool duplicateShot = false;
 	bool hit = false;
-	bool on_board = false;
+	bool not_on_board = false;
 	//Really Dude
 	//do {
 	switch (orientation) {
 	case 1: {
+		std::cout << "\n Case: 1" << std::endl;
 		//The xai + 1 thing wont work because it is not saving the last location it is coming from a new spot
-		hit = check_hit(xai + 1, yai, board, duplicateShot, on_board);
-		if (duplicateShot || on_board) {
+		hit = check_hit(xai + 1, yai, board, duplicateShot, not_on_board);
+		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
@@ -267,8 +271,9 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 2: {
-		hit = check_hit(xai, yai + 1, board, duplicateShot, on_board);
-		if (duplicateShot || on_board) {
+		std::cout << "\n Case: 2" << std::endl;
+		hit = check_hit(xai, yai + 1, board, duplicateShot, not_on_board);
+		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
@@ -285,8 +290,9 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 3: {
-		hit = check_hit(xai - 1, yai, board, duplicateShot, on_board);
-		if (duplicateShot || on_board) {
+		std::cout << "\n Case: 3" << std::endl;
+		hit = check_hit(xai - 1, yai, board, duplicateShot, not_on_board);
+		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
@@ -303,8 +309,9 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 4: {
-		hit = check_hit(xai, yai - 1, board, duplicateShot, on_board);
-		if (duplicateShot || on_board) {
+		std::cout << "\n Case: 4" << std::endl;
+		hit = check_hit(xai, yai - 1, board, duplicateShot, not_on_board);
+		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
@@ -321,19 +328,20 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	default: {
+		std::cout <<"\n Default"<< std::endl;
 		//do {
 		int xai = std::rand() % 15;
 		int yai = std::rand() % 15;
 		hit = check_hit(xai, yai, board, duplicateShot);
-		//This line is what is breaking it so STOP WITH THE DO WHILE LOOPS
-		//} while (duplicateShot);
+		//This is what happend to the last traitor
+		//haha
+	//} while (duplicateShot);
 		if (hit) {
 			board[xai][yai] = 'H';
 			std::cout << "You've been hit!" << std::endl;
 			orientation = 4;
 		}
 		else {
-			std::cout << xai + 1 << "\t" << yai + 1 << std::endl;
 			board[xai][yai] = 'X';
 			std::cout << "Enemy missed!" << std::endl;
 		}
@@ -343,19 +351,24 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 	//} while (duplicateShot);
 }
 
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot, bool &on_board)
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
 {
-	if (x > 15 || y > 15)
-		on_board = true;
-	if (board[x][y] == 'H' || 'X')
+	if ((x > 15) || (y > 15)) 
+		not_on_board = true;
+	else
+		not_on_board = false;
+	if ((board[x][y] == 'H') || (board[x][y] == 'X')) 
 		duplicateShot = true;
+	else
+		duplicateShot = false;
+
 	if (board[x][y] == '#')
 		return true;
 	return false;
 }
-bool check_hit(int x, int y, char board[16][16], bool duplicateShot)
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 {
-	if (board[x][y] == 'H' || 'X')
+	if ((board[x][y] == 'H') || (board[x][y] == 'X'))
 		duplicateShot = true;
 	if (board[x][y] == '#')
 		return true;
