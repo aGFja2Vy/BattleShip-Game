@@ -30,7 +30,6 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot);
-
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board);
 
 //life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
@@ -68,7 +67,6 @@ int main()
 	bool lifetest = life_test(bottom_board);
 	bool ailifetest = life_test(ai_board);
 
-	//Reminder to change the while loop to something more efficient
 	//This maybe a good while loop :)
 	while (lifetest && ailifetest) {
 		shoot(ai_board, 0, 0);
@@ -98,22 +96,16 @@ void DisplayBoard(char board[16][16])
 {
 	std::cout << "  |1  2  3  4  5  6  7  8  9  10 11 12 13 14 15" << std::endl;
 	std::cout << "--|--------------------------------------------" << std::endl;
-	for (int x = 0; x < 9; x++)
-	{
+	for (int x = 0; x < 9; x++) {
 		std::cout << x + 1 << " |";
 		for (int y = 0; y < 15; y++)
-		{
 			std::cout << board[x][y] << "  ";
-		}
 		std::cout << std::endl;
 	}
-	for (int x = 9; x < 15; x++)
-	{
+	for (int x = 9; x < 15; x++) {
 		std::cout << x + 1 << "|";
 		for (int y = 0; y < 15; y++)
-		{
 			std::cout << board[x][y] << "  ";
-		}
 		std::cout << std::endl;
 	}
 }
@@ -122,16 +114,13 @@ void set_board(char board[16][16])
 {
 	for (int x = 0; x < 15; x++) {
 		for (int y = 0; y < 15; y++)
-		{
 			board[x][y] = ' ';
-		}
 	}
 }
 
 void ai_set_ship(char board[16][16], int ships)
 {
-	bool ship_settle = false;
-	do {
+	bool ship_probs = false;
 		bool spacetest = false;
 		int x2 = std::rand() % 15;
 		int y2 = std::rand() % 15;
@@ -139,40 +128,35 @@ void ai_set_ship(char board[16][16], int ships)
 		if (position == 0) {
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int y = 0; y < ships; y++) {
+				for (int y = 0; y < ships; y++)
 					board[x2][y2 - (ships / 2) - 1 + y] = '#';
-				}
-				ship_settle = false;
+				ship_probs = false;
 			}
 		}
 		else {
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
-				for (int x = 0; x < ships; x++) {
+				for (int x = 0; x < ships; x++)
 					board[x2 - (ships / 2) - 1 + x][y2] = '#';
-				}
-				ship_settle = false;
+				ship_probs = false;
 			}
 		}
-		if (!(spacetest)) {
-			ship_settle = true;
-		}
-	} while (ship_settle);
+		if (!(spacetest))
+			ship_probs = true;
+		if (ship_probs)
+			ai_set_ship(board, ships);
 }
 
 void updateboard(char board[16][16], char board2[16][16])
 {
 	for (int x = 0; x < 15; x++) {
 		for (int y = 0; y < 15; y++) {
-			if (board[x][y] == 'H') {
+			if (board[x][y] == 'H')
 				board2[x][y] = 'H';
-			}
-			else if (board[x][y] == 'X') {
+			else if (board[x][y] == 'X')
 				board2[x][y] = 'X';
-			}
-			else {
+			else
 				board2[x][y] = ' ';
-			}
 		}
 	}
 }
@@ -180,37 +164,35 @@ void updateboard(char board[16][16], char board2[16][16])
 //Figure out a way to set int position to a bool value instead of a number?
 void set_ship(char board[16][16], int ships, int x2, int y2)
 {
-	bool ship_settle = false;
-	do {
-		bool spacetest = false;
-		int position = 0;
-		std::cout << "Where would you like to place your ship?" << std::endl;
-		std::cin >> x2 >> y2;
-		std::cout << "1: Horizontal \n2: Vertical" << std::endl;
-		std::cin >> position;
-		if (position == 1) {
-			spacetest = hspace_test(board, ships, x2, y2);
-			if (spacetest) {
-				for (int y = 0; y < ships; y++) {
-					board[x2 - 1][y2 - (ships / 2) - 1 + y] = '#';
-				}
-				ship_settle = false;
-			}
+	bool ship_probs = false;
+	bool spacetest = false;
+	int position = 0;
+	std::cout << "Where would you like to place your ship?" << std::endl;
+	std::cin >> x2 >> y2;
+	std::cout << "1: Horizontal \n2: Vertical" << std::endl;
+	std::cin >> position;
+	if (position == 1) {
+		spacetest = hspace_test(board, ships, x2, y2);
+		if (spacetest) {
+			for (int y = 0; y < ships; y++)
+				board[x2 - 1][y2 - (ships / 2) - 1 + y] = '#';
+			ship_probs = false;
 		}
-		else {
-			spacetest = vspace_test(board, ships, x2, y2);
-			if (spacetest) {
-				for (int x = 0; x < ships; x++) {
-					board[x2 - (ships / 2) - 1 + x][y2 - 1] = '#';
-				}
-				ship_settle = false;
-			}
+	}
+	else {
+		spacetest = vspace_test(board, ships, x2, y2);
+		if (spacetest) {
+			for (int x = 0; x < ships; x++)
+				board[x2 - (ships / 2) - 1 + x][y2 - 1] = '#';
+			ship_probs = false;
 		}
-		if (!(spacetest)) {
-			std::cout << "Invalid position." << std::endl;
-			ship_settle = true;
-		}
-	} while (ship_settle);
+	}
+	if (!(spacetest)) {
+		std::cout << "Invalid position." << std::endl;
+		ship_probs = true;
+	}
+	if (ship_probs)
+		set_ship(board, ships, x2, y2);
 }
 
 void shoot(char board[16][16], int x1, int y1)
@@ -219,7 +201,6 @@ void shoot(char board[16][16], int x1, int y1)
 	bool duplicateShot = false;
 	bool not_on_board = false;
 
-	do {
 		std::cout << "Where would you like to aim?" << std::endl;
 		std::cin >> x1 >> y1;
 		hit = check_hit(x1 - 1, y1 - 1, board, duplicateShot, not_on_board);
@@ -228,9 +209,9 @@ void shoot(char board[16][16], int x1, int y1)
 			std::cout << "Already shot there. Please try again." << std::endl;
 		if (not_on_board)
 			std::cout << "Inputs are not on the board. Please try again." << std::endl;
-
-	} while (duplicateShot || not_on_board);
-	
+		if (duplicateShot || not_on_board)
+			shoot(board, x1, y1);
+			
 	std::cout << "You fired at " << x1 << ", " << y1 << std::endl;
 	if (hit) {
 		board[x1 - 1][y1 - 1] = 'H';
@@ -249,7 +230,6 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 	bool duplicateShot = false;
 	bool hit = false;
 	bool not_on_board = false;
-	do {
 	switch (orientation) {
 	case 1: {
 		hit = check_hit(xai + 1, yai, board, duplicateShot, not_on_board);
@@ -332,8 +312,8 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		int yai = std::rand() % 15;
 		hit = check_hit(xai, yai, board, duplicateShot);
 		//Suggestion:
-		if(duplicateShot)
-		break;
+		if (duplicateShot)
+			break;
 		ptrxai = xai;
 		ptryai = yai;
 		std::cout << "Enemy fires at " << xai + 1 << ", " << yai + 1 << std::endl;
@@ -349,7 +329,8 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		break;
 	}
 	}
-	} while (duplicateShot || not_on_board);
+	if (duplicateShot || not_on_board)
+		ai_shoot(board, orientation, xai, yai);
 	yai = ptryai;
 	xai = ptrxai;
 }
