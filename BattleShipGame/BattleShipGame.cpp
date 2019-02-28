@@ -26,7 +26,7 @@ void set_ship(char board[16][16], int ships, int x2 = 0, int y2 = 0);
 void shoot(char board[16][16], int x1, int y1);
 
 //ai_shoot() to generate random numbers and input it into a check_hit() function, and outputs whether or not the shot hit or missed.
-void ai_shoot(char board[16][16], int &orientation, int xai, int yai);
+void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot);
@@ -177,7 +177,7 @@ void updateboard(char board[16][16], char board2[16][16])
 	}
 }
 
-//Figure out a way to set position to a bool value instead of a number?
+//Figure out a way to set int position to a bool value instead of a number?
 void set_ship(char board[16][16], int ships, int x2, int y2)
 {
 	bool ship_settle = false;
@@ -222,7 +222,6 @@ void shoot(char board[16][16], int x1, int y1)
 	do {
 		std::cout << "Where would you like to aim?" << std::endl;
 		std::cin >> x1 >> y1;
-		//std::cin >> y1;
 		hit = check_hit(x1 - 1, y1 - 1, board, duplicateShot, not_on_board);
 
 		if (duplicateShot)
@@ -231,7 +230,8 @@ void shoot(char board[16][16], int x1, int y1)
 			std::cout << "Inputs are not on the board. Please try again." << std::endl;
 
 	} while (duplicateShot || not_on_board);
-
+	
+	std::cout << "You fired at " << x1 << ", " << y1 << std::endl;
 	if (hit) {
 		board[x1 - 1][y1 - 1] = 'H';
 		std::cout << "Hit!" << std::endl;
@@ -241,27 +241,27 @@ void shoot(char board[16][16], int x1, int y1)
 		std::cout << "Miss!" << std::endl;
 	}
 }
-//Undecided variable names.
-void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
+
+void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 {
+	int ptrxai = xai;
+	int ptryai = yai;
 	bool duplicateShot = false;
 	bool hit = false;
 	bool not_on_board = false;
-	//Really Dude
-	//do {
+	do {
 	switch (orientation) {
 	case 1: {
-		std::cout << "\n Case: 1" << std::endl;
-		//The xai + 1 thing wont work because it is not saving the last location it is coming from a new spot
 		hit = check_hit(xai + 1, yai, board, duplicateShot, not_on_board);
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
+		std::cout << "Enemy fires at " << xai + 2 << ", " << yai + 1 << std::endl;
 		if (hit) {
 			board[xai + 1][yai] = 'H';
 			std::cout << "You've been hit!" << std::endl;
-			xai++;
+			ptrxai++;
 		}
 		else {
 			board[xai + 1][yai] = 'X';
@@ -271,16 +271,16 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 2: {
-		std::cout << "\n Case: 2" << std::endl;
 		hit = check_hit(xai, yai + 1, board, duplicateShot, not_on_board);
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
+		std::cout << "Enemy fires at " << xai + 1 << ", " << yai + 2 << std::endl;
 		if (hit) {
 			board[xai][yai + 1] = 'H';
 			std::cout << "You've been hit!" << std::endl;
-			yai++;
+			ptryai++;
 		}
 		else {
 			board[xai][yai + 1] = 'X';
@@ -290,16 +290,16 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 3: {
-		std::cout << "\n Case: 3" << std::endl;
 		hit = check_hit(xai - 1, yai, board, duplicateShot, not_on_board);
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
+		std::cout << "Enemy fires at " << xai << ", " << yai + 1 << std::endl;
 		if (hit) {
 			board[xai - 1][yai] = 'H';
 			std::cout << "You've been hit!" << std::endl;
-			xai--;
+			ptrxai--;
 		}
 		else {
 			board[xai - 1][yai] = 'X';
@@ -309,16 +309,16 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	case 4: {
-		std::cout << "\n Case: 4" << std::endl;
 		hit = check_hit(xai, yai - 1, board, duplicateShot, not_on_board);
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
 		}
+		std::cout << "Enemy fires at " << xai + 1 << ", " << yai << std::endl;
 		if (hit) {
 			board[xai][yai - 1] = 'H';
 			std::cout << "You've been hit!" << std::endl;
-			yai--;
+			ptryai--;
 		}
 		else {
 			board[xai][yai - 1] = 'X';
@@ -328,14 +328,15 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	default: {
-		std::cout <<"\n Default"<< std::endl;
-		//do {
 		int xai = std::rand() % 15;
 		int yai = std::rand() % 15;
 		hit = check_hit(xai, yai, board, duplicateShot);
-		//This is what happend to the last traitor
-		//haha
-	//} while (duplicateShot);
+		//Suggestion:
+		if(duplicateShot)
+		break;
+		ptrxai = xai;
+		ptryai = yai;
+		std::cout << "Enemy fires at " << xai + 1 << ", " << yai + 1 << std::endl;
 		if (hit) {
 			board[xai][yai] = 'H';
 			std::cout << "You've been hit!" << std::endl;
@@ -348,12 +349,14 @@ void ai_shoot(char board[16][16], int &orientation, int xai, int yai)
 		break;
 	}
 	}
-	//} while (duplicateShot);
+	} while (duplicateShot || not_on_board);
+	yai = ptryai;
+	xai = ptrxai;
 }
 
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
 {
-	if ((x > 15) || (y > 15)) 
+	if ((x >= 15) || (y >= 15))
 		not_on_board = true;
 	else
 		not_on_board = false;
@@ -370,6 +373,8 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 {
 	if ((board[x][y] == 'H') || (board[x][y] == 'X'))
 		duplicateShot = true;
+	else
+		duplicateShot = false;
 	if (board[x][y] == '#')
 		return true;
 	return false;
