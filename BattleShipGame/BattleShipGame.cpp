@@ -61,6 +61,7 @@ int main()
 	DisplayBoard(bottom_board);
 	for (int w = 0; w < 5; w++) {
 		set_ship(bottom_board, ships[w]);
+		system("cls");
 		DisplayBoard(bottom_board);
 		ai_set_ship(ai_board, ships[w]);
 	}
@@ -71,6 +72,7 @@ int main()
 	while (lifetest && ailifetest) {
 		shoot(ai_board, 0, 0);
 		updateboard(ai_board, top_board);
+		system("cls");
 		DisplayBoard(top_board);
 		ailifetest = life_test(ai_board);
 		if (!(ailifetest)) {
@@ -211,16 +213,17 @@ void shoot(char board[16][16], int x1, int y1)
 			std::cout << "Inputs are not on the board. Please try again." << std::endl;
 		if (duplicateShot || not_on_board)
 			shoot(board, x1, y1);
-			
-	std::cout << "You fired at " << x1 << ", " << y1 << std::endl;
-	if (hit) {
-		board[x1 - 1][y1 - 1] = 'H';
-		std::cout << "Hit!" << std::endl;
-	}
-	else {
-		board[x1 - 1][y1 - 1] = 'X';
-		std::cout << "Miss!" << std::endl;
-	}
+		else {
+			std::cout << "You fired at " << x1 << ", " << y1 << std::endl;
+			if (hit) {
+				board[x1 - 1][y1 - 1] = 'H';
+				std::cout << "Hit!" << std::endl;
+			}
+			else {
+				board[x1 - 1][y1 - 1] = 'X';
+				std::cout << "Miss!" << std::endl;
+			}
+		}
 }
 
 void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
@@ -337,7 +340,7 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
 {
-	if ((x >= 15) || (y >= 15))
+	if (x >= 15 || y >= 15 || x < 0 || y < 0)
 		not_on_board = true;
 	else
 		not_on_board = false;
