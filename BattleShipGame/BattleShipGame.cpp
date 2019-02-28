@@ -1,5 +1,20 @@
 // BattleShipGame.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
+/* 
+*   Optional TODO:
+*------------------------
+*	-Score Board
+*	-Better AI
+*	-Track placement for 5 turns
+*	-Clear screen fix
+*	-Abilities
+*	-Flexable Board Size (and number of ships)
+*	-Make Object Oriented (add classes)
+*/
+
+
+
+
 #include "pch.h"
 #include <iostream>
 //Library includes random to create random inputs by the "ai".
