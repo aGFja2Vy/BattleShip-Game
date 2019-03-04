@@ -1,2 +1,4 @@
-﻿  BattleShipGame.cpp
-  BattleShipGame.vcxproj -> C:\Users\mrmat\Documents\GitHub\BattleShip-Game\BattleShipGame\Debug\BattleShipGame.exe
+﻿  pch.cpp
+  BattleShipGame.cpp
+  LINK : C:\Users\956040525\Documents\GitHub\BattleShip-Game\BattleShipGame\Debug\BattleShipGame.exe not found or not built by the last incremental link; performing full link
+  BattleShipGame.vcxproj -> C:\Users\956040525\Documents\GitHub\BattleShip-Game\BattleShipGame\Debug\BattleShipGame.exe

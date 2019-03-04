@@ -3,6 +3,7 @@
 /* 
 *   Optional TODO:
 *------------------------
+*   -Coordanate bug with letters
 *	-Score Board
 *	-Better AI
 *	-Track placement for 5 turns
