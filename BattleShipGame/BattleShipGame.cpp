@@ -47,6 +47,7 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai);
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot);
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board);
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board, bool &shipShot);
 
 //life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
 bool life_test(char board[16][16]);
@@ -187,6 +188,9 @@ void set_ship(char board[16][16], int ships, int x2, int y2)
 	int position = 0;
 	std::cout << "Where would you like to place your ship?" << std::endl;
 	std::cin >> x2 >> y2;
+	if ((x2 > 14) || (y2 > 14) || (x2 < 0) || (y2 < 0)) {
+		std::cout << "Invalid" << std::endl;
+	}
 	std::cout << "1: Horizontal \n2: Vertical" << std::endl;
 	std::cin >> position;
 	if (position == 1) {
@@ -249,28 +253,37 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 	bool duplicateShot = false;
 	bool hit = false;
 	bool not_on_board = false;
+	bool shipShot = false;
 	switch (orientation) {
 	case 1: {
-		hit = check_hit(xai + 1, yai, board, duplicateShot, not_on_board);
-		if (duplicateShot || not_on_board) {
-			orientation--;
+		hit = check_hit(xai + 1, yai, board, duplicateShot, not_on_board, shipShot);
+		if (shipShot) {
+			ptrxai++;
 			break;
 		}
-		std::cout << "Enemy fires at " << xai + 2 << ", " << yai + 1 << std::endl;
-		if (hit) {
-			board[xai + 1][yai] = 'H';
-			std::cout << "You've been hit!" << std::endl;
-			ptrxai++;
-		}
-		else {
-			board[xai + 1][yai] = 'X';
-			std::cout << "Enemy missed!" << std::endl;
-			orientation--;
-		}
-		break;
+			if (duplicateShot || not_on_board) {
+				orientation--;
+				break;
+			}
+			std::cout << "Enemy fires at " << xai + 2 << ", " << yai + 1 << std::endl;
+			if (hit) {
+				board[xai + 1][yai] = 'H';
+				std::cout << "You've been hit!" << std::endl;
+				ptrxai++;
+			}
+			else {
+				board[xai + 1][yai] = 'X';
+				std::cout << "Enemy missed!" << std::endl;
+				orientation--;
+			}
+			break;
 	}
 	case 2: {
-		hit = check_hit(xai, yai + 1, board, duplicateShot, not_on_board);
+		hit = check_hit(xai, yai + 1, board, duplicateShot, not_on_board, shipShot);
+		if (shipShot) {
+			ptryai++;
+			break;
+		}
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
@@ -289,7 +302,11 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		break;
 	}
 	case 3: {
-		hit = check_hit(xai - 1, yai, board, duplicateShot, not_on_board);
+		hit = check_hit(xai - 1, yai, board, duplicateShot, not_on_board, shipShot);
+		if (shipShot) {
+			ptrxai--;
+			break;
+		}
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
@@ -308,7 +325,11 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		break;
 	}
 	case 4: {
-		hit = check_hit(xai, yai - 1, board, duplicateShot, not_on_board);
+		hit = check_hit(xai, yai - 1, board, duplicateShot, not_on_board, shipShot);
+		if (shipShot) {
+			ptryai--;
+			break;
+		}
 		if (duplicateShot || not_on_board) {
 			orientation--;
 			break;
@@ -330,7 +351,6 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		int xai = std::rand() % 15;
 		int yai = std::rand() % 15;
 		hit = check_hit(xai, yai, board, duplicateShot);
-		//Suggestion:
 		if (duplicateShot)
 			break;
 		ptrxai = xai;
@@ -348,10 +368,10 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		break;
 	}
 	}
-	if (duplicateShot || not_on_board)
-		ai_shoot(board, orientation, xai, yai);
 	yai = ptryai;
 	xai = ptrxai;
+	if (duplicateShot || not_on_board)
+		ai_shoot(board, orientation, xai, yai);
 }
 
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
@@ -372,6 +392,24 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 {
 	if ((board[x][y] == 'H') || (board[x][y] == 'X'))
+		duplicateShot = true;
+	else
+		duplicateShot = false;
+	if (board[x][y] == '#')
+		return true;
+	return false;
+}
+bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board, bool &shipShot)
+{
+	if (x >= 15 || y >= 15 || x < 0 || y < 0)
+		not_on_board = true;
+	else
+		not_on_board = false;
+	if (board[x][y] == 'H')
+		shipShot = true;
+	else
+		shipShot = false;
+	if (board[x][y] == 'X')
 		duplicateShot = true;
 	else
 		duplicateShot = false;
