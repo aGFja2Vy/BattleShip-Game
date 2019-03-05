@@ -188,33 +188,36 @@ void set_ship(char board[16][16], int ships, int x2, int y2)
 	int position = 0;
 	std::cout << "Where would you like to place your ship?" << std::endl;
 	std::cin >> x2 >> y2;
-	if ((x2 > 14) || (y2 > 14) || (x2 < 0) || (y2 < 0)) {
+	if (x2 > 15 || y2 > 15 || x2 < 0 || y2 < 0) {
 		std::cout << "Invalid" << std::endl;
-	}
-	std::cout << "1: Horizontal \n2: Vertical" << std::endl;
-	std::cin >> position;
-	if (position == 1) {
-		spacetest = hspace_test(board, ships, x2, y2);
-		if (spacetest) {
-			for (int y = 0; y < ships; y++)
-				board[x2 - 1][y2 - (ships / 2) - 1 + y] = '#';
-			ship_probs = false;
-		}
+		set_ship(board, ships, x2, y2);
 	}
 	else {
-		spacetest = vspace_test(board, ships, x2, y2);
-		if (spacetest) {
-			for (int x = 0; x < ships; x++)
-				board[x2 - (ships / 2) - 1 + x][y2 - 1] = '#';
-			ship_probs = false;
+		std::cout << "1: Horizontal \n2: Vertical" << std::endl;
+		std::cin >> position;
+		if (position == 1) {
+			spacetest = hspace_test(board, ships, x2, y2);
+			if (spacetest) {
+				for (int y = 0; y < ships; y++)
+					board[x2 - 1][y2 - (ships / 2) - 1 + y] = '#';
+				ship_probs = false;
+			}
 		}
+		else {
+			spacetest = vspace_test(board, ships, x2, y2);
+			if (spacetest) {
+				for (int x = 0; x < ships; x++)
+					board[x2 - (ships / 2) - 1 + x][y2 - 1] = '#';
+				ship_probs = false;
+			}
+		}
+		if (!spacetest) {
+			std::cout << "Invalid position." << std::endl;
+			ship_probs = true;
+		}
+		if (ship_probs)
+			set_ship(board, ships, x2, y2);
 	}
-	if (!(spacetest)) {
-		std::cout << "Invalid position." << std::endl;
-		ship_probs = true;
-	}
-	if (ship_probs)
-		set_ship(board, ships, x2, y2);
 }
 
 void shoot(char board[16][16], int x1, int y1)
@@ -376,11 +379,11 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
 {
-	if (x >= 15 || y >= 15 || x < 0 || y < 0)
+	if (x > 14 || y > 14 || x < 0 || y < 0)
 		not_on_board = true;
 	else
 		not_on_board = false;
-	if ((board[x][y] == 'H') || (board[x][y] == 'X')) 
+	if (board[x][y] == 'H' || board[x][y] == 'X') 
 		duplicateShot = true;
 	else
 		duplicateShot = false;
@@ -391,7 +394,7 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_
 }
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 {
-	if ((board[x][y] == 'H') || (board[x][y] == 'X'))
+	if (board[x][y] == 'H' || board[x][y] == 'X')
 		duplicateShot = true;
 	else
 		duplicateShot = false;
@@ -401,7 +404,7 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 }
 bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board, bool &shipShot)
 {
-	if (x >= 15 || y >= 15 || x < 0 || y < 0)
+	if (x > 14 || y > 14 || x < 0 || y < 0)
 		not_on_board = true;
 	else
 		not_on_board = false;
