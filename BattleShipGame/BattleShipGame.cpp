@@ -24,39 +24,39 @@
 #include <ctime>
 
 //DisplayBoard() to show all of the player's board values to them.
-void DisplayBoard(char board[16][16]);
+void DisplayBoard(char board[11][11]);
 
 //set_board() to initially set all values of the board to O.
-void set_board(char board[16][16]);
+void set_board(char board[11][11]);
 
 //ai_set_ship() to set the enemy's board via random input.
-void ai_set_ship(char board[16][16], int ships);
+void ai_set_ship(char board[11][11], int ships);
 
 //updateboard() to update the top board to the show the same as the ai board, but without the ships.
-void updateboard(char board[16][16], char board2[16][16]);
+void updateboard(char board[11][11], char board2[11][11]);
 
 //set_ship() to set up the player's ships with their inputs. Also resets int values so it may be used again.
-void set_ship(char board[16][16], int ships, int x2 = 0, int y2 = 0);
+void set_ship(char board[11][11], int ships, int x2 = 0, int y2 = 0);
 
 //shoot() to recieve input from the player and input into the check_hit() function, and outputs whether or not the shot hit or missed.
-void shoot(char board[16][16], int x1, int y1);
+void shoot(char board[11][11], int x1, int y1);
 
 //ai_shoot() to generate random numbers and input it into a check_hit() function, and outputs whether or not the shot hit or missed.
-void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai);
+void ai_shoot(char board[11][11], int &orientation, int &xai, int &yai);
 
 //check_hit() to check the board for whether or not the input was successful or not, and outputs the answer to the shoot() function.
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot);
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board);
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board, bool &shipShot);
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot);
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot, bool &not_on_board);
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot, bool &not_on_board, bool &shipShot);
 
 //life_test() to check if any of a player's ships are alive. Will end the game if no ship spaces are found on either board.
-bool life_test(char board[16][16]);
+bool life_test(char board[11][11]);
 
 //hspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for horizontal orientation.
-bool hspace_test(char board[16][16], int ships, int x2, int y2);
+bool hspace_test(char board[11][11], int ships, int x2, int y2);
 
 //vspace_test() to check if places chosen by the player for their ships will overlap other ships and/or clip out of the board for vertical orientation.
-bool vspace_test(char board[16][16], int ships, int x2, int y2);
+bool vspace_test(char board[11][11], int ships, int x2, int y2);
 
 //main() to start the thing.
 int main()
@@ -66,10 +66,10 @@ int main()
 	int yai = 0;
 	int orientation = 0;
 	int turn_counter = 1;
-	int ships[5] = { 5, 4, 4, 3, 2 };
-	char bottom_board[16][16] = {};
-	char top_board[16][16] = {};
-	char ai_board[16][16] = {};
+	int ships[5] = { 5, 4, 3, 3, 2 };
+	char bottom_board[11][11] = {};
+	char top_board[11][11] = {};
+	char ai_board[11][11] = {};
 
 	set_board(top_board);
 	set_board(bottom_board);
@@ -111,38 +111,33 @@ int main()
 	}
 }
 
-void DisplayBoard(char board[16][16])
+void DisplayBoard(char board[11][11])
 {
-	std::cout << "  |1  2  3  4  5  6  7  8  9  10 11 12 13 14 15" << std::endl;
-	std::cout << "--|--------------------------------------------" << std::endl;
-	for (int x = 0; x < 9; x++) {
-		std::cout << x + 1 << " |";
-		for (int y = 0; y < 15; y++)
-			std::cout << board[x][y] << "  ";
-		std::cout << std::endl;
-	}
-	for (int x = 9; x < 15; x++) {
-		std::cout << x + 1 << "|";
-		for (int y = 0; y < 15; y++)
+	char alpha[26] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+	std::cout << "  |1  2  3  4  5  6  7  8  9  10" << std::endl;
+	std::cout << "--|-----------------------------" << std::endl;
+	for (int x = 0; x < 10; x++) {
+		std::cout << alpha[x] << " |";
+		for (int y = 0; y < 10; y++)
 			std::cout << board[x][y] << "  ";
 		std::cout << std::endl;
 	}
 }
 
-void set_board(char board[16][16])
+void set_board(char board[11][11])
 {
-	for (int x = 0; x < 15; x++) {
-		for (int y = 0; y < 15; y++)
+	for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 10; y++)
 			board[x][y] = ' ';
 	}
 }
 
-void ai_set_ship(char board[16][16], int ships)
+void ai_set_ship(char board[11][11], int ships)
 {
 	bool ship_probs = false;
 		bool spacetest = false;
-		int x2 = std::rand() % 15;
-		int y2 = std::rand() % 15;
+		int x2 = std::rand() % 10;
+		int y2 = std::rand() % 10;
 		int position = std::rand() % 2;
 		if (position == 0) {
 			spacetest = hspace_test(board, ships, x2, y2);
@@ -166,10 +161,10 @@ void ai_set_ship(char board[16][16], int ships)
 			ai_set_ship(board, ships);
 }
 
-void updateboard(char board[16][16], char board2[16][16])
+void updateboard(char board[11][11], char board2[11][11])
 {
-	for (int x = 0; x < 15; x++) {
-		for (int y = 0; y < 15; y++) {
+	for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 10; y++) {
 			if (board[x][y] == 'H')
 				board2[x][y] = 'H';
 			else if (board[x][y] == 'X')
@@ -181,14 +176,14 @@ void updateboard(char board[16][16], char board2[16][16])
 }
 
 //Figure out a way to set int position to a bool value instead of a number?
-void set_ship(char board[16][16], int ships, int x2, int y2)
+void set_ship(char board[11][11], int ships, int x2, int y2)
 {
 	bool ship_probs = false;
 	bool spacetest = false;
 	int position = 0;
 	std::cout << "Where would you like to place your ship?" << std::endl;
 	std::cin >> x2 >> y2;
-	if (x2 > 15 || y2 > 15 || x2 < 0 || y2 < 0) {
+	if (x2 > 10 || y2 > 10 || x2 < 0 || y2 < 0) {
 		std::cout << "Invalid" << std::endl;
 		set_ship(board, ships, x2, y2);
 	}
@@ -220,7 +215,7 @@ void set_ship(char board[16][16], int ships, int x2, int y2)
 	}
 }
 
-void shoot(char board[16][16], int x1, int y1)
+void shoot(char board[11][11], int x1, int y1)
 {
 	bool hit = false;
 	bool duplicateShot = false;
@@ -249,7 +244,7 @@ void shoot(char board[16][16], int x1, int y1)
 		}
 }
 
-void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
+void ai_shoot(char board[11][11], int &orientation, int &xai, int &yai)
 {
 	int ptrxai = xai;
 	int ptryai = yai;
@@ -351,8 +346,8 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		break;
 	}
 	default: {
-		int xai = std::rand() % 15;
-		int yai = std::rand() % 15;
+		int xai = std::rand() % 10;
+		int yai = std::rand() % 10;
 		hit = check_hit(xai, yai, board, duplicateShot);
 		if (duplicateShot)
 			break;
@@ -377,7 +372,7 @@ void ai_shoot(char board[16][16], int &orientation, int &xai, int &yai)
 		ai_shoot(board, orientation, xai, yai);
 }
 
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board)
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot, bool &not_on_board)
 {
 	if (x > 14 || y > 14 || x < 0 || y < 0)
 		not_on_board = true;
@@ -392,7 +387,7 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_
 		return true;
 	return false;
 }
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot)
 {
 	if (board[x][y] == 'H' || board[x][y] == 'X')
 		duplicateShot = true;
@@ -402,7 +397,7 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot)
 		return true;
 	return false;
 }
-bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_on_board, bool &shipShot)
+bool check_hit(int x, int y, char board[11][11], bool &duplicateShot, bool &not_on_board, bool &shipShot)
 {
 	if (x > 14 || y > 14 || x < 0 || y < 0)
 		not_on_board = true;
@@ -422,11 +417,11 @@ bool check_hit(int x, int y, char board[16][16], bool &duplicateShot, bool &not_
 }
 
 //function name "life_test" undecided.
-bool life_test(char board[16][16])
+bool life_test(char board[11][11])
 {
 	int lifetest = 0;
-	for (int x = 0; x < 15; x++) {
-		for (int y = 0; y < 15; y++) {
+	for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 10; y++) {
 			if (board[x][y] == '#')
 				lifetest++;
 		}
@@ -436,7 +431,7 @@ bool life_test(char board[16][16])
 	return false;
 }
 
-bool hspace_test(char board[16][16], int ships, int x2, int y2)
+bool hspace_test(char board[11][11], int ships, int x2, int y2)
 {
 	int hspacetest = 0;
 	for (int y = 0; y < ships; y++) {
@@ -448,7 +443,7 @@ bool hspace_test(char board[16][16], int ships, int x2, int y2)
 		return true;
 	return false;
 }
-bool vspace_test(char board[16][16], int ships, int x2, int y2)
+bool vspace_test(char board[11][11], int ships, int x2, int y2)
 {
 	int vspacetest = 0;
 	for (int x = 0; x < ships; x++) {
