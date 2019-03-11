@@ -66,6 +66,7 @@ int main()
 	int yai = 0;
 	int orientation = 0;
 	int turn_counter = 1;
+	//Keeps track of every ship, even when playing classic Battleship (10 x 10)
 	int ships[5] = { 5, 4, 3, 3, 2 };
 	int bottom_board[11][11] = {};
 	int top_board[11][11] = {};
@@ -113,13 +114,17 @@ int main()
 
 void DisplayBoard(int board[11][11])
 {
-	char tileType[8] = { '#','#','#','#','#', ' ','X','H' };
-	char alpha[26] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+	//Keeps track of every tile. # tiles are ship tiles and are anything above 3.
+	char tileType[8] = { ' ', 'X', 'H', '#', '#', '#', '#', '#' };
 	std::cout << "  |1  2  3  4  5  6  7  8  9  10" << std::endl;
 	std::cout << "--|-----------------------------" << std::endl;
-	for (int x = 0; x < 10; x++) {
-		std::cout << alpha[x] << " |";
+	char z = 'A';
+
+		for (int x = 0; x < 10; x++) {
+			std::cout << z << " |";
+			z++;
 		for (int y = 0; y < 10; y++)
+			//use of board int, DONT change to char or it will BREAK!!!!!!!!
 			std::cout << tileType[board[x][y]] << "  ";
 		std::cout << std::endl;
 	}
@@ -129,7 +134,7 @@ void set_board(int board[11][11])
 {
 	for (int x = 0; x < 10; x++) {
 		for (int y = 0; y < 10; y++)
-			board[x][y] = 5;
+			board[x][y] = 0;
 	}
 }
 
@@ -144,7 +149,7 @@ void ai_set_ship(int board[11][11], int w, int ships)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++)
-					board[x2][y2 - (ships / 2) - 1 + y] = w;
+					board[x2][y2 - (ships / 2) - 1 + y] = w + 2;
 				ship_probs = false;
 			}
 		}
@@ -152,7 +157,7 @@ void ai_set_ship(int board[11][11], int w, int ships)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++)
-					board[x2 - (ships / 2) - 1 + x][y2] = w;
+					board[x2 - (ships / 2) - 1 + x][y2] = w + 2;
 				ship_probs = false;
 			}
 		}
@@ -166,12 +171,12 @@ void updateboard(int board[11][11], int board2[11][11])
 {
 	for (int x = 0; x < 10; x++) {
 		for (int y = 0; y < 10; y++) {
-			if (board[x][y] == 7)
-				board2[x][y] = 7;
-			else if (board[x][y] == 6)
-				board2[x][y] = 6;
+			if (board[x][y] == 2)
+				board2[x][y] = 2;
+			else if (board[x][y] == 1)
+				board2[x][y] = 1;
 			else
-				board2[x][y] = 5;
+				board2[x][y] = 0;
 		}
 	}
 }
@@ -195,7 +200,7 @@ void set_ship(int board[11][11], int ships, int w, int x2, int y2)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++)
-					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w;
+					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w + 2;
 				ship_probs = false;
 			}
 		}
@@ -203,7 +208,7 @@ void set_ship(int board[11][11], int ships, int w, int x2, int y2)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++)
-					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w;
+					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w + 2;
 				ship_probs = false;
 			}
 		}
@@ -238,11 +243,11 @@ void shoot(int board[11][11], int x1, int y1)
 		else {
 			std::cout << "You fired at " << x1 << ", " << y1 << std::endl;
 			if (hit) {
-				board[x1 - 1][y1 - 1] = 7;
+				board[x1 - 1][y1 - 1] = 2;
 				std::cout << "Hit!" << std::endl;
 			}
 			else {
-				board[x1 - 1][y1 - 1] = 6;
+				board[x1 - 1][y1 - 1] = 1;
 				std::cout << "Miss!" << std::endl;
 			}
 		}
@@ -269,12 +274,12 @@ void ai_shoot(int board[11][11], int &orientation, int &xai, int &yai)
 			}
 			std::cout << "Enemy fires at " << xai + 2 << ", " << yai + 1 << std::endl;
 			if (hit) {
-				board[xai + 1][yai] = 7;
+				board[xai + 1][yai] = 2;
 				std::cout << "You've been hit!" << std::endl;
 				ptrxai++;
 			}
 			else {
-				board[xai + 1][yai] = 6;
+				board[xai + 1][yai] = 1;
 				std::cout << "Enemy missed!" << std::endl;
 				orientation--;
 			}
@@ -292,12 +297,12 @@ void ai_shoot(int board[11][11], int &orientation, int &xai, int &yai)
 		}
 		std::cout << "Enemy fires at " << xai + 1 << ", " << yai + 2 << std::endl;
 		if (hit) {
-			board[xai][yai + 1] = 7;
+			board[xai][yai + 1] = 2;
 			std::cout << "You've been hit!" << std::endl;
 			ptryai++;
 		}
 		else {
-			board[xai][yai + 1] = 6;
+			board[xai][yai + 1] = 1;
 			std::cout << "Enemy missed!" << std::endl;
 			orientation--;
 		}
@@ -315,12 +320,12 @@ void ai_shoot(int board[11][11], int &orientation, int &xai, int &yai)
 		}
 		std::cout << "Enemy fires at " << xai << ", " << yai + 1 << std::endl;
 		if (hit) {
-			board[xai - 1][yai] = 7;
+			board[xai - 1][yai] = 2;
 			std::cout << "You've been hit!" << std::endl;
 			ptrxai--;
 		}
 		else {
-			board[xai - 1][yai] = 6;
+			board[xai - 1][yai] = 1;
 			std::cout << "Enemy missed!" << std::endl;
 			orientation--;
 		}
@@ -338,12 +343,12 @@ void ai_shoot(int board[11][11], int &orientation, int &xai, int &yai)
 		}
 		std::cout << "Enemy fires at " << xai + 1 << ", " << yai << std::endl;
 		if (hit) {
-			board[xai][yai - 1] = 7;
+			board[xai][yai - 1] = 2;
 			std::cout << "You've been hit!" << std::endl;
 			ptryai--;
 		}
 		else {
-			board[xai][yai - 1] = 6;
+			board[xai][yai - 1] = 1;
 			std::cout << "Enemy missed!" << std::endl;
 			orientation--;
 		}
@@ -359,12 +364,12 @@ void ai_shoot(int board[11][11], int &orientation, int &xai, int &yai)
 		ptryai = yai;
 		std::cout << "Enemy fires at " << xai + 1 << ", " << yai + 1 << std::endl;
 		if (hit) {
-			board[xai][yai] = 7;
+			board[xai][yai] = 2;
 			std::cout << "You've been hit!" << std::endl;
 			orientation = 4;
 		}
 		else {
-			board[xai][yai] = 6;
+			board[xai][yai] = 1;
 			std::cout << "Enemy missed!" << std::endl;
 		}
 		break;
@@ -382,22 +387,22 @@ bool check_hit(int x, int y, int board[11][11], bool &duplicateShot, bool &not_o
 		not_on_board = true;
 	else
 		not_on_board = false;
-	if (board[x][y] == 7 || board[x][y] == 6) 
+	if (board[x][y] == 2 || board[x][y] == 1) 
 		duplicateShot = true;
 	else
 		duplicateShot = false;
 
-	if (board[x][y] < 5)
+	if (board[x][y] > 2)
 		return true;
 	return false;
 }
 bool check_hit(int x, int y, int board[11][11], bool &duplicateShot)
 {
-	if (board[x][y] == 7 || board[x][y] == 6)
+	if (board[x][y] == 2 || board[x][y] == 1)
 		duplicateShot = true;
 	else
 		duplicateShot = false;
-	if (board[x][y] < 5)
+	if (board[x][y] > 2)
 		return true;
 	return false;
 }
@@ -407,15 +412,15 @@ bool check_hit(int x, int y, int board[11][11], bool &duplicateShot, bool &not_o
 		not_on_board = true;
 	else
 		not_on_board = false;
-	if (board[x][y] == 7)
+	if (board[x][y] == 2)
 		shipShot = true;
 	else
 		shipShot = false;
-	if (board[x][y] == 6)
+	if (board[x][y] == 1)
 		duplicateShot = true;
 	else
 		duplicateShot = false;
-	if (board[x][y] < 5)
+	if (board[x][y] > 2)
 		return true;
 	return false;
 }
@@ -426,7 +431,7 @@ bool life_test(int board[11][11])
 	int lifetest = 0;
 	for (int x = 0; x < 10; x++) {
 		for (int y = 0; y < 10; y++) {
-			if (board[x][y] < 5)
+			if (board[x][y] < 0)
 				lifetest++;
 		}
 	}
@@ -439,7 +444,7 @@ bool hspace_test(int board[11][11], int ships, int x2, int y2)
 {
 	int hspacetest = 0;
 	for (int y = 0; y < ships; y++) {
-		if (board[x2 - 1][y2 - (ships / 2) - 1 + y] == 5) {
+		if (board[x2 - 1][y2 - (ships / 2) - 1 + y] == 0) {
 			hspacetest++;
 		}
 	}
@@ -451,7 +456,7 @@ bool vspace_test(int board[11][11], int ships, int x2, int y2)
 {
 	int vspacetest = 0;
 	for (int x = 0; x < ships; x++) {
-		if (board[x2 - (ships / 2) - 1 + x][y2 - 1] == 5) {
+		if (board[x2 - (ships / 2) - 1 + x][y2 - 1] == 0) {
 			vspacetest++;
 		}
 	}
