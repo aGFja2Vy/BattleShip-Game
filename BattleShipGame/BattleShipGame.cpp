@@ -95,7 +95,7 @@ int main()
 		system("cls");
 		DisplayBoard(top_board);
 		ailifetest = life_test(ai_board);
-		if (!(ailifetest)) {
+		if (!ailifetest) {
 			std::cout << "You win!" << std::endl;
 			DisplayBoard(ai_board);
 			std::cout << "Turns taken: " << turn_counter << std::endl;
@@ -105,7 +105,7 @@ int main()
 		ai_shoot(bottom_board, orientation, xai, yai);
 		DisplayBoard(bottom_board);
 		lifetest = life_test(bottom_board);
-		if (!(lifetest)) {
+		if (!lifetest) {
 			std::cout << "You lost!" << std::endl;
 			DisplayBoard(ai_board);
 			std::cout << "Turns taken: " << turn_counter << std::endl;
@@ -120,7 +120,6 @@ void DisplayBoard(int board[11][11])
 	int arrx = 10;
 	int arry = 10;
 	//Keeps track of every tile. # tiles are ship tiles and are anything above 3.
-	char tileType[8] = { ' ', 'X', 'H', '#', '#', '#', '#', '#' };
 	char z = 'A';
 	std::cout << "  |";
 
@@ -141,7 +140,20 @@ void DisplayBoard(int board[11][11])
 			z++;
 		for (int y = 0; y < 10; y++)
 			//use of board int, DONT change to char or it will BREAK!!!!!!!!
-			std::cout << tileType[board[x][y]] << "  ";
+			switch (board[x][y]) {
+			case 0:
+				std::cout << ' ' << "  ";
+				break;
+			case 1:
+				std::cout << 'X' << "  ";
+				break;
+			case 2:
+				std::cout << 'H' << "  ";
+				break;
+			default:
+				std::cout << '#' << "  ";
+				break;
+			}
 		std::cout << std::endl;
 	}
 }
@@ -165,7 +177,7 @@ void ai_set_ship(int board[11][11], int w, int ships)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++)
-					board[x2][y2 - (ships / 2) - 1 + y] = w + 2;
+					board[x2][y2 - (ships / 2) - 1 + y] = w + 3;
 				ship_probs = false;
 			}
 		}
@@ -173,7 +185,7 @@ void ai_set_ship(int board[11][11], int w, int ships)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++)
-					board[x2 - (ships / 2) - 1 + x][y2] = w + 2;
+					board[x2 - (ships / 2) - 1 + x][y2] = w + 3;
 				ship_probs = false;
 			}
 		}
@@ -216,7 +228,7 @@ void set_ship(int board[11][11], int ships, int w, int x2, int y2)
 			spacetest = hspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int y = 0; y < ships; y++)
-					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w + 2;
+					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w + 3;
 				ship_probs = false;
 			}
 		}
@@ -224,7 +236,7 @@ void set_ship(int board[11][11], int ships, int w, int x2, int y2)
 			spacetest = vspace_test(board, ships, x2, y2);
 			if (spacetest) {
 				for (int x = 0; x < ships; x++)
-					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w + 2;
+					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w + 3;
 				ship_probs = false;
 			}
 		}
