@@ -3,6 +3,19 @@
 /* 
 *   Optional TODO:
 *------------------------
+<<<<<<< HEAD
+*	-Display both Boards (requires change in DisplayBoard function, OOP can simplify problem)
+*   -Coordanate bug with letters (try catch function probably required)
+
+*	-Make Object Oriented (add classes)
+*		+(Requires OOP) Flexible Board Size (and number of ships)
+*		+Score Board
+*		+Identify and announce ships and ship deaths, respectively
+*		+Track Placement for 5 turns
+*		+Developer options
+*		+Abilities
+=======
+*   -Make Object Oriented (add classes)
 *   -Coordanate bug with letters
 *	-Score Board
 *	-Better AI
@@ -10,7 +23,7 @@
 *	-Clear screen fix
 *	-Abilities
 *	-Flexable Board Size (and number of ships)
-*	-Make Object Oriented (add classes)
+>>>>>>> bd619086c1f4b3379c1dcf8641fe090f75c4cd39
 */
 
 
@@ -99,6 +112,7 @@ int main()
 			std::cout << "Turns taken: " << turn_counter << std::endl;
 			return 0;
 		}
+
 		ai_shoot(bottom_board, orientation, xai, yai);
 		DisplayBoard(bottom_board);
 		lifetest = life_test(bottom_board);
@@ -114,11 +128,24 @@ int main()
 
 void DisplayBoard(int board[11][11])
 {
+	int arrx = 10;
+	int arry = 10;
 	//Keeps track of every tile. # tiles are ship tiles and are anything above 3.
 	char tileType[8] = { ' ', 'X', 'H', '#', '#', '#', '#', '#' };
-	std::cout << "  |1  2  3  4  5  6  7  8  9  10" << std::endl;
-	std::cout << "--|-----------------------------" << std::endl;
 	char z = 'A';
+	std::cout << "  |";
+
+	for (int a = 1; a < arrx + 1; a++) {
+		if (a < 10)
+			std::cout << a << "  ";
+		else
+			std::cout << a << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "--|";
+	for (int t = 0; t < arrx; t++)
+		std::cout << "---";
+	std::cout << std::endl;
 
 		for (int x = 0; x < 10; x++) {
 			std::cout << z << " |";
