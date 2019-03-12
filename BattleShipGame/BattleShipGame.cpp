@@ -3,7 +3,6 @@
 /* 
 *   Optional TODO:
 *------------------------
-<<<<<<< HEAD
 *	-Display both Boards (requires change in DisplayBoard function, OOP can simplify problem)
 *   -Coordanate bug with letters (try catch function probably required)
 
@@ -14,16 +13,6 @@
 *		+Track Placement for 5 turns
 *		+Developer options
 *		+Abilities
-=======
-*   -Make Object Oriented (add classes)
-*   -Coordanate bug with letters
-*	-Score Board
-*	-Better AI
-*	-Track placement for 5 turns
-*	-Clear screen fix
-*	-Abilities
-*	-Flexable Board Size (and number of ships)
->>>>>>> bd619086c1f4b3379c1dcf8641fe090f75c4cd39
 */
 
 
