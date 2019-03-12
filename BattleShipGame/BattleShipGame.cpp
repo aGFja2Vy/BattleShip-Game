@@ -3,6 +3,7 @@
 /* 
 *   Optional TODO:
 *------------------------
+*   -Make Object Oriented (add classes)
 *   -Coordanate bug with letters
 *	-Score Board
 *	-Better AI
@@ -10,7 +11,6 @@
 *	-Clear screen fix
 *	-Abilities
 *	-Flexable Board Size (and number of ships)
-*	-Make Object Oriented (add classes)
 */
 
 
