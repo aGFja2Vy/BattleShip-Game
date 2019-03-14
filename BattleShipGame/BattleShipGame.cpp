@@ -267,7 +267,7 @@ void set_ship(int board[11][11], int ships, int w, int arrx, int arry, int x2, i
 
 	std::cout << "Where would you like to place your ship?" << std::endl;
 	std::cin >> x2 >> y2;
-	if (x2 >= arrx || y2 >= arry || x2 < 0 || y2 < 0) {
+	if (x2 > arrx || y2 > arry || x2 < 0 || y2 < 0) {
 		std::cout << "Invalid." << std::endl;
 		set_ship(board, ships, ships, w, arrx, arry);
 	}
@@ -518,24 +518,24 @@ bool check_hit(int x, int y, int board[11][11], bool &duplicateShot, bool &not_o
 	else
 		not_on_board = false;
 
-	if (board[x][y] == 2 || board[x][y] == 1) 
+	if (board[x][y] == 3 || board[x][y] == 2) 
 		duplicateShot = true;
 	else
 		duplicateShot = false;
 
-	if (board[x][y] > 2)
+	if (board[x][y] > 3)
 		return true;
 
 	return false;
 }
 bool check_hit(int x, int y, int board[11][11], bool &duplicateShot, int arrx, int arry)
 {
-	if (board[x][y] == 2 || board[x][y] == 1)
+	if (board[x][y] == 3 || board[x][y] == 2)
 		duplicateShot = true;
 	else
 		duplicateShot = false;
 
-	if (board[x][y] > 2)
+	if (board[x][y] > 3)
 		return true;
 
 	return false;
@@ -547,17 +547,17 @@ bool check_hit(int x, int y, int board[11][11], bool &duplicateShot, bool &not_o
 	else
 		not_on_board = false;
 
-	if (board[x][y] == 2)
+	if (board[x][y] == 3)
 		shipShot = true;
 	else
 		shipShot = false;
 
-	if (board[x][y] == 1)
+	if (board[x][y] == 2)
 		duplicateShot = true;
 	else
 		duplicateShot = false;
 
-	if (board[x][y] > 2)
+	if (board[x][y] > 3)
 		return true;
 
 	return false;
