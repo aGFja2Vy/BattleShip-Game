@@ -60,7 +60,7 @@ bool hspace_test(int board[11][11], int ships, int x2, int y2);
 bool vspace_test(int board[11][11], int ships, int x2, int y2);
 
 //main() to start the thing.
-void main()
+int main()
 {
 	srand((unsigned)time(0));
 	int xai = 0;
@@ -82,7 +82,7 @@ void main()
 
 	DisplayBoard(bottom_board, arrx, arry);
 
-	for (int w = 1; w <= 5; w++) {
+	for (int w = 0; w < 5; w++) {
 		set_ship(bottom_board, ships[w], w, arrx, arry);
 		system("cls");
 
@@ -113,7 +113,7 @@ void main()
 			DisplayBoard(ai_board, arrx, arry);
 
 			std::cout << "Turns taken: " << turn_counter << std::endl;
-			return;
+			return 0;
 
 		}
 
@@ -130,7 +130,7 @@ void main()
 			DisplayBoard(ai_board, arrx, arry);
 
 			std::cout << "Turns taken: " << turn_counter << std::endl;
-			return;
+			return 0;
 
 		}
 
@@ -145,8 +145,7 @@ void DisplayBoard(int board[11][11], int arrx, int arry)
 
 	std::cout << "  |";
 
-	for (int a = 1; a < arrx + 1; a++) 
-	{
+	for (int a = 1; a < arrx + 1; a++) {
 
 		if (a < 10)
 			std::cout << a << "  ";
@@ -168,32 +167,30 @@ void DisplayBoard(int board[11][11], int arrx, int arry)
 		std::cout << z << " |";
 		z++;
 
-	for (int y = 0; y < arry; y++)
-		//use of board int, DONT change to char or it will BREAK!!!!!!!!
-		switch (board[x][y]) {
+		for (int y = 0; y < arry; y++) {
+			//Keeps track of every tile. # tiles are ship tiles and are anything above 3.
+			switch (board[x][y]) {
 
-		case 1:
-			std::cout << ' ' << "  ";
-			break;
-		
-		case 2:
-			std::cout << 'X' << "  ";
-			break;
-		
-		case 3:
-			std::cout << 'H' << "  ";
-			break;
-		
-		default:
-			std::cout << '#' << "  ";
-			break;
+			case 1:
+				std::cout << ' ' << "  ";
+				break;
+
+			case 2:
+				std::cout << 'X' << "  ";
+				break;
+
+			case 3:
+				std::cout << 'H' << "  ";
+				break;
+
+			default:
+				std::cout << '#' << "  ";
+				break;
 			}
 		}
-
-		std::cout << std::endl;
+			std::cout << std::endl;
 	}
 }
-
 void set_board(int board[11][11], int arrx, int arry)
 {
 	for (int x = 0; x < arrx; x++) {
@@ -216,23 +213,21 @@ void ai_set_ship(int board[11][11], int w, int ships, int arrx, int arry)
 	if (position == 0) {
 
 		spacetest = hspace_test(board, ships, x2, y2);
-	
+
 		if (spacetest) {
 			for (int y = 0; y < ships; y++)
-				
-board[x2][y2 - (ships / 2) - 1 + y] = w + 3;
+
+				board[x2][y2 - (ships / 2) - 1 + y] = w + 4;
 			ship_probs = false;
 		}
 	}
 
-	else 
-	{
+	else {
 		spacetest = vspace_test(board, ships, x2, y2);
 
-		if (spacetest) 
-		{
+		if (spacetest) {
 			for (int x = 0; x < ships; x++)
-				board[x2 - (ships / 2) - 1 + x][y2] = w + 3;
+				board[x2 - (ships / 2) - 1 + x][y2] = w + 4;
 
 			ship_probs = false;
 
@@ -242,8 +237,9 @@ board[x2][y2 - (ships / 2) - 1 + y] = w + 3;
 
 		if (ship_probs)
 			ai_set_ship(board, w, ships, arrx, arry);
-}
 
+	}
+}
 void updateboard(int board[11][11], int board2[11][11])
 {
 	for (int x = 0; x < 10; x++) {
@@ -285,7 +281,7 @@ void set_ship(int board[11][11], int ships, int w, int arrx, int arry, int x2, i
 
 			if (spacetest) {
 				for (int y = 0; y < ships; y++)
-					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w + 3;
+					board[x2 - 1][y2 - (ships / 2) - 1 + y] = w + 4;
 
 				ship_probs = false;
 
@@ -297,7 +293,7 @@ void set_ship(int board[11][11], int ships, int w, int arrx, int arry, int x2, i
 
 			if (spacetest) {
 				for (int x = 0; x < ships; x++)
-					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w + 3;
+					board[x2 - (ships / 2) - 1 + x][y2 - 1] = w + 4;
 
 				ship_probs = false;
 
@@ -594,7 +590,6 @@ bool hspace_test(int board[11][11], int ships, int x2, int y2)
 		if (board[x2 - 1][y2 - (ships / 2) - 1 + y] == 1)
 			hspacetest++;
 		}
-	}
 
 	if (hspacetest == ships)
 		return true;
